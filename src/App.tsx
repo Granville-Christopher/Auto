@@ -603,7 +603,7 @@ function ShowroomPage({ onBack, onCarClick }: { onBack: () => void; onCarClick: 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/10" />
                 <div className="absolute right-4 bottom-4 rounded-full bg-white/95 backdrop-blur-sm px-2 py-1 shadow-lg border border-white/80">
-                  <span className="text-lg lg:text-base font-bold text-[#121212]">{car.price}</span>
+                  <span className="text-sm font-bold text-[#121212]">{car.price}</span>
                 </div>
               </div>
 
