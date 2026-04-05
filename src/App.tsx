@@ -140,7 +140,7 @@ const contactSeller = (car: typeof allCars[0]) => {
 };
 
 // Navigation Component
-function Navigation({ onShowroomClick, isShowroomPage }: { onShowroomClick: () => void; isShowroomPage?: boolean }) {
+function Navigation({ onShowroomClick, onNavigateToSection, isShowroomPage }: { onShowroomClick: () => void; onNavigateToSection: (id: string) => void; isShowroomPage?: boolean }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -158,11 +158,13 @@ function Navigation({ onShowroomClick, isShowroomPage }: { onShowroomClick: () =
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isShowroomPage]);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleNavigateToSection = (id: string) => {
+    onNavigateToSection(id);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleShowroomClick = () => {
+    onShowroomClick();
     setIsMobileMenuOpen(false);
   };
 
@@ -183,23 +185,23 @@ function Navigation({ onShowroomClick, isShowroomPage }: { onShowroomClick: () =
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-8">
-          <button onClick={() => scrollToSection('inventory')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
+          <button onClick={() => onNavigateToSection('inventory')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
             Inventory
           </button>
           <button onClick={onShowroomClick} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
             Showroom
           </button>
-          <button onClick={() => scrollToSection('services')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
+          <button onClick={() => onNavigateToSection('services')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
             Services
           </button>
-          <button onClick={() => scrollToSection('testimonials')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
+          <button onClick={() => onNavigateToSection('testimonials')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
             Testimonials
           </button>
-          <button onClick={() => scrollToSection('contact')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
+          <button onClick={() => onNavigateToSection('contact')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-sm tracking-wide uppercase">
             Contact
           </button>
           <Button 
-            onClick={() => scrollToSection('contact')}
+            onClick={() => handleNavigateToSection('contact')}
             className="bg-[#e93d3d] hover:bg-[#d13232] text-white px-6 py-2 rounded-none uppercase tracking-wider text-sm"
           >
             Get Quote
@@ -219,23 +221,23 @@ function Navigation({ onShowroomClick, isShowroomPage }: { onShowroomClick: () =
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 right-0 bg-[#121212]/95 backdrop-blur-md py-6 px-6">
           <div className="flex flex-col gap-4">
-            <button onClick={() => scrollToSection('inventory')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
+              <button onClick={() => handleNavigateToSection('inventory')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
               Inventory
             </button>
-            <button onClick={onShowroomClick} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
+            <button onClick={handleShowroomClick} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
               Showroom
             </button>
-            <button onClick={() => scrollToSection('services')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
+            <button onClick={() => handleNavigateToSection('services')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
               Services
             </button>
-            <button onClick={() => scrollToSection('testimonials')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
+            <button onClick={() => handleNavigateToSection('testimonials')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
               Testimonials
             </button>
-            <button onClick={() => scrollToSection('contact')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
+            <button onClick={() => handleNavigateToSection('contact')} className="text-white/80 hover:text-[#e93d3d] transition-colors text-lg tracking-wide uppercase text-left">
               Contact
             </button>
             <Button 
-              onClick={() => scrollToSection('contact')}
+              onClick={() => handleNavigateToSection('contact')}
               className="bg-[#e93d3d] hover:bg-[#d13232] text-white px-6 py-3 rounded-none uppercase tracking-wider text-sm w-full mt-4"
             >
               Get Quote
@@ -383,13 +385,13 @@ function VehicleModal({ car, isOpen, onClose }: { car: typeof allCars[0] | null;
 
       {/* Mobile Full Page */}
       {isOpen && (
-        <div className="mobile-car-details lg:hidden fixed inset-0 z-50 bg-white overflow-y-auto transform translate-y-full">
+        <div className="mobile-car-details lg:hidden fixed inset-0 z-50 bg-white overflow-y-auto">
           {/* Back Button */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
+          <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10 shadow-sm">
             <Button
               onClick={onClose}
               variant="ghost"
-              className="flex items-center gap-2 text-[#121212] hover:text-[#e93d3d] p-0"
+              className="flex items-center gap-2 text-[#121212] hover:text-[#e93d3d] p-0 font-medium"
             >
               <ArrowLeft size={20} />
               Back to Showroom
@@ -578,11 +580,11 @@ function ShowroomPage({ onBack, onCarClick }: { onBack: () => void; onCarClick: 
         </div>
 
         {/* Cars Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
           {filteredCars.map((car) => (
             <div 
               key={car.id}
-              className="showroom-card group relative bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+              className="showroom-card group relative bg-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full flex flex-col"
             >
               {/* Tag */}
               <div className="absolute top-4 left-4 z-10">
@@ -592,17 +594,21 @@ function ShowroomPage({ onBack, onCarClick }: { onBack: () => void; onCarClick: 
               </div>
 
               {/* Image */}
-              <div className="relative h-56 overflow-hidden">
+              <div className="relative h-48 lg:h-56 overflow-hidden">
                 <img 
                   src={car.image} 
                   alt={car.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/10" />
+                <div className="absolute left-4 bottom-4 rounded-full bg-white/95 backdrop-blur-sm px-3 py-2 shadow-lg border border-white/80">
+                  <span className="text-sm font-bold text-[#121212]">{car.price}</span>
+                </div>
               </div>
 
               {/* Content */}
-              <div className="p-4 lg:p-6">
+              <div className="p-4 lg:p-6 flex-1 flex flex-col">
                 <h3 
                   className="text-xl lg:text-2xl font-bold text-[#121212] mb-2"
                   style={{ fontFamily: 'Teko, sans-serif' }}
@@ -614,18 +620,17 @@ function ShowroomPage({ onBack, onCarClick }: { onBack: () => void; onCarClick: 
                   <span className="w-1 h-1 bg-[#333]/40 rounded-full" />
                   <span>{car.mileage}</span>
                 </div>
-                <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2 text-xs lg:text-sm text-[#333]/60 mb-4">
+                <div className="flex flex-col gap-1 lg:gap-2 text-xs lg:text-sm text-[#333]/60 mb-4 flex-1">
                   <div className="flex items-center gap-2">
-                    <Settings2 size={12} className="lg:w-[14px] lg:h-[14px]" />
+                    <Settings2 size={12} className="lg:w-[14px] lg:h-[14px] text-[#e93d3d]" />
                     <span>{car.transmission}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Fuel size={12} className="lg:w-[14px] lg:h-[14px]" />
+                    <Fuel size={12} className="lg:w-[14px] lg:h-[14px] text-[#e93d3d]" />
                     <span>{car.engine}</span>
                   </div>
                 </div>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0">
-                  <span className="text-lg lg:text-2xl font-bold text-[#e93d3d]">{car.price}</span>
+                <div className="flex items-center justify-end mt-auto">
                   <Button 
                     onClick={() => onCarClick(car)}
                     variant="ghost" 
@@ -883,13 +888,13 @@ function InventorySection({ onCarClick }: { onCarClick: (car: typeof allCars[0])
 
         <div 
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
           style={{ perspective: '1000px' }}
         >
           {cars.map((car) => (
             <div 
               key={car.id}
-              className="car-card group relative bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
+              className="car-card group relative bg-white rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full flex flex-col"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <div className="absolute top-4 left-4 z-10">
@@ -904,22 +909,24 @@ function InventorySection({ onCarClick }: { onCarClick: (car: typeof allCars[0])
                   alt={car.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Premium overlay effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/10" />
               </div>
 
-              <div className="p-4 lg:p-6">
+              <div className="p-4 lg:p-6 flex-1 flex flex-col">
                 <h3 
                   className="text-xl lg:text-2xl font-bold text-[#121212] mb-2"
                   style={{ fontFamily: 'Teko, sans-serif' }}
                 >
                   {car.name}
                 </h3>
-                <div className="flex items-center gap-3 lg:gap-4 text-xs lg:text-sm text-[#333]/60 mb-4">
+                <div className="flex items-center gap-3 lg:gap-4 text-xs lg:text-sm text-[#333]/60 mb-4 flex-1">
                   <span>{car.year}</span>
                   <span className="w-1 h-1 bg-[#333]/40 rounded-full" />
                   <span>{car.mileage}</span>
                 </div>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0 mt-auto">
                   <span className="text-lg lg:text-2xl font-bold text-[#e93d3d]">{car.price}</span>
                   <Button 
                     onClick={() => onCarClick(car)}
@@ -1477,6 +1484,7 @@ function App() {
   const [showShowroom, setShowShowroom] = useState(false);
   const [selectedCar, setSelectedCar] = useState<typeof allCars[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingScrollSection, setPendingScrollSection] = useState<string | null>(null);
 
   const handleCarClick = (car: typeof allCars[0]) => {
     setSelectedCar(car);
@@ -1487,10 +1495,35 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const navigateToSection = (id: string) => {
+    if (showShowroom) {
+      setShowShowroom(false);
+      setPendingScrollSection(id);
+    } else {
+      scrollToSection(id);
+    }
+  };
+
+  useEffect(() => {
+    if (!showShowroom && pendingScrollSection) {
+      const id = pendingScrollSection;
+      setPendingScrollSection(null);
+      window.setTimeout(() => scrollToSection(id), 120);
+    }
+  }, [showShowroom, pendingScrollSection]);
+
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <Navigation 
         onShowroomClick={() => { setShowShowroom(true); scrollToTop(); }} 
+        onNavigateToSection={navigateToSection}
         isShowroomPage={showShowroom}
       />
       
